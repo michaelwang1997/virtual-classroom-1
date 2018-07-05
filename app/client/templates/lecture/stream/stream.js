@@ -1,3 +1,5 @@
+
+
 var peers = {}
 var phone = false
 var currentRoomId = null
@@ -485,9 +487,8 @@ function aframeInit() {
         },
 
         tick: function (time, timeDelta) {
-
+            var scene = document.getElementById("lines")
             var cursor = document.querySelector('#cursor');
-
             if (cursor.getAttribute("geometry")) {
                 cursor.removeAttribute("geometry");
             }
@@ -497,33 +498,35 @@ function aframeInit() {
             if (data.drawing) {
                 if (data.counter === data.delay) {
                     data.counter = 0;
-                    var scene = document.querySelector('a-scene');
+                    // var scene = document.querySelector('a-scene');
                     var line = document.createElement('a-entity');
 
-                    line.setAttribute('networked', 'template:#doodle-template');
+                   line.setAttribute('networked', 'template:#doodle-template');
                     line.setAttribute('id', 'doodle__' + data.doodle_index);
                     line.setAttribute('class', 'eraseable');
-                    line.setAttribute('erase_line', 'color: red');
-
-                    //console.log(line);
+                   line.setAttribute('erase_line', 'color: red');
+                    console.log(line)
                     scene.appendChild(line);
 
                     var camera = document.querySelector('#player');
 
 
                     var cameraPos = camera.getAttribute('position');
+                    console.log(camera)
+                    console.log(cameraPos)
                     var cameraRot = camera.object3D.getWorldDirection();
+                    console.log(cameraRot)
 
                     var mult = (6.9 - cameraPos.z) / -cameraRot.z;
-                    var line_rot = line_rot = {
+                    var line_rot = {
                         x: cameraPos.x - cameraRot.x * mult,
                         y: cameraPos.y - cameraRot.y * mult,
                         z: cameraPos.z - cameraRot.z * mult
                     };
-
+                    console.log(line_rot)
                     if (data.start) {
                         //console.log(data.doodle_index);
-
+                        console.log("Hi")
                         line.setAttribute('line', {
                             start: {
                                 x: line_rot.x,
@@ -537,7 +540,7 @@ function aframeInit() {
                             },
                             color: data.color
                         });
-
+                        console.log("Hi1")
                         data.start = false;
                     } else {
 
@@ -545,6 +548,7 @@ function aframeInit() {
                         //console.log('#doodle__' + (data.doodle_index - 1));
                         var previous_doodle = document.querySelector('#doodle__' + (data.doodle_index - 1));
                         var previous_line = previous_doodle.getDOMAttribute('line');
+                        console.log("hello")
                         line.setAttribute('line', {
                                 start: {
                                     x: previous_line.end.x,
@@ -559,6 +563,7 @@ function aframeInit() {
                                 color: data.color
                             }
                         );
+                        console.log("hello1")
                     }
                     data.doodle_index++;
                 } else {
