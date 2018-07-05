@@ -36,40 +36,6 @@ Template.Stream.events({
     'click .enter-group-discussion': function (event) {
     },
     'click #exit-group-discussion': function () {
-        var lecture = Lectures.findOne(Session.get('lectureId'))
-        if (lecture.mode == 'group') {
-
-            console.log(peerConnection)
-            console.log(peerConnection.getAllParticipants())
-            let moderatorShifted = false
-            if (peerConnection.getAllParticipants().length == 0) {
-                peerConnection.closeEntireSession(function () {
-                    console.log("Entire session has been closed")
-                });
-                peerConnection.closeSocket()
-                console.log("Socket closed!")
-                peerConnection.attachStreams.forEach(function (localStream) {
-                    localStream.stop();
-                });
-            }
-            else {
-                peerConnection.getAllParticipants().forEach(function (participantId) {
-                    if (peerConnection.userid == peerConnection.sessionid && moderatorShifted == false) {
-                        peerConnection.shiftModerationControl(participantId, peerConnection.broadcasters, false);
-                        console.log(peerConnection.broadcasters)
-                        console.log("Moderator requesting shift to " + participantId);
-                        moderatorShifted = true;
-                    }
-                    peerConnection.disconnectWith(participantId);
-                });
-                peerConnection.attachStreams.forEach(function (localStream) {
-                    localStream.stop();
-                });
-                peerConnection.close()
-            }
-            peerConnection = null
-            groupid = null;
-        }
     }
 });
 /*****************************************************************************/
@@ -315,7 +281,7 @@ function aframeInit() {
                 }
 
             });
-        }
+        },
     });
 
     AFRAME.registerComponent('teleport', {
@@ -740,7 +706,7 @@ function aframeInit() {
 /* Stream: Lifecycle Hooks */
 /*****************************************************************************/
 Template.Stream.onCreated(function () {
-    console.log('Group ID of this VR room is: '+ Session.get('groupId'))
+    console.log('Group ID of this VR room is: ' + Session.get('groupId'))
 });
 
 Template.Stream.onRendered(function () {
@@ -780,6 +746,47 @@ Template.Stream.onRendered(function () {
 Template.Stream.onDestroyed(function () {
     document.documentElement.style.overflow = "auto"
     Session.set('groupId', false)
+    var lecture = Lectures.findOne(Session.get('lectureId'))
+    if (lecture.mode == 'group') {
+
+        console.log(peerConnection)
+        console.log(peerConnection.getAllParticipants())
+        let moderatorShifted = false
+        if (peerConnection.getAllParticipants().length == 0) {
+            peerConnection.closeEntireSession(function () {
+                console.log("Entire session has been closed")
+            });
+            peerConnection.closeSocket()
+            console.log("Socket closed!")
+            peerConnection.attachStreams.forEach(function (localStream) {
+                localStream.stop();
+            });
+        }
+        else {
+            peerConnection.getAllParticipants().forEach(function (participantId) {
+                if (peerConnection.userid == peerConnection.sessionid && moderatorShifted == false) {
+                    peerConnection.shiftModerationControl(participantId, peerConnection.broadcasters, false);
+                    console.log(peerConnection.broadcasters)
+                    console.log("Moderator requesting shift to " + participantId);
+                    moderatorShifted = true;
+                }
+                peerConnection.disconnectWith(participantId);
+            });
+            peerConnection.attachStreams.forEach(function (localStream) {
+                localStream.stop();
+            });
+            peerConnection.close()
+        }
+        peerConnection = null
+        groupid = null;
+    }
+    let audios = document.getElementsByTagName('audio');
+    if (audios.length >= 0) {
+        for (let i = 0; i < audios.length; i++) {
+            audios[i].remove();
+        }
+        console.log("Audio element removed!");
+    }
 });
 
 

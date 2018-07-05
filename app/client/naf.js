@@ -588,6 +588,7 @@
                         var a = templateEl;
 
                         var el = document.createElement('template');
+                        // el.id = "avatar-template"
 
                         el.innerHTML = a.innerHTML;
                         a.parentNode.replaceChild(el, a);
@@ -595,7 +596,7 @@
                         console.log("a: " + el.content.childElementCount);
 
 
-                        console.log("temp: " + el);
+                        console.log(el);
 
 
                         this.templateCache[schema.template] = document.importNode(el.content, true);
@@ -788,6 +789,7 @@
             }, {
                 key: 'updateEntity',
                 value: function updateEntity(client, dataType, entityData) {
+                    console.log(entityData)
                     var isCompressed = entityData[0] == 1;
                     var networkId = isCompressed ? entityData[1] : entityData.networkId;
 

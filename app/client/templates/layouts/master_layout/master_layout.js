@@ -15,10 +15,12 @@ Template.MasterLayout.helpers({
 
 Template.MasterLayout.events({
 	'click #login-modal-trigger': function() {
+		$('#login-modal').modal()
 		$('#login-modal').modal('open')
 	},
 	'click #register-modal-trigger': function() {
-		$('#register-modal').modal('open')
+        $('#register-modal').modal()
+        $('#register-modal').modal('open')
 	},
 	'click #logout': function(event){
 		event.preventDefault();
